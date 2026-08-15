@@ -1,0 +1,6 @@
+{
+  "name": "Código de Vida",
+  "description": "Videojuego educativo interactivo de bioética médica con toma de decisiones clínicas, 12 dilemas éticos y consecuencias narrativas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
