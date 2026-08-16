@@ -36,6 +36,13 @@ export type SettingType =
 
 export type DecisionQuality = 'excellent' | 'adequate' | 'questionable' | 'problematic';
 
+export interface InquiryQuestion {
+  id: string;
+  question: string;
+  answer: string;
+  category?: 'Paciente' | 'Familia' | 'Historial' | 'Legal';
+}
+
 export interface CaseOption {
   id: 'A' | 'B' | 'C' | 'D';
   text: string;
@@ -78,6 +85,11 @@ export interface ClinicalCase {
     requiredFlag: string;
     consequenceNotice: string;
   }[];
+  inquiryQuestions?: InquiryQuestion[];
+  isUrgent?: boolean;
+  timeLimitSeconds?: number;
+  defaultOptionId?: 'A' | 'B' | 'C' | 'D';
+  bioethicalHint?: string;
 }
 
 export interface Achievement {
@@ -102,6 +114,8 @@ export interface DecisionRecord {
   timestamp: string;
 }
 
+export type GameMode = 'standard' | 'challenge' | 'practice';
+
 export interface GameState {
   playerName: string;
   studentTitle: string;
@@ -115,6 +129,8 @@ export interface GameState {
   soundEnabled: boolean;
   gameStarted: boolean;
   hintsUsed: number;
+  gameMode: GameMode;
+  committeeConsultationsLeft: number;
 }
 
 export type RankTier = 

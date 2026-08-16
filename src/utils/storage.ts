@@ -27,6 +27,8 @@ export const INITIAL_GAME_STATE: GameState = {
   soundEnabled: true,
   gameStarted: false,
   hintsUsed: 0,
+  gameMode: 'standard',
+  committeeConsultationsLeft: 2,
 };
 
 export const storageManager = {

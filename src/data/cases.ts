@@ -29,6 +29,24 @@ export const CLINICAL_CASES: ClinicalCase[] = [
     ],
     bioethicalDilemma: '¿Debe priorizarse la celeridad del flujo hospitalario o garantizar un proceso auténtico de consentimiento informado con información comprensible y resolución de dudas?',
     question: '¿Cómo debes actuar como médico responsable del paciente?',
+    bioethicalHint: 'El principio de Autonomía exige que el consentimiento sea un proceso comprensivo y voluntario. Prisas o presiones institucionales no justifican omitir la explicación médica.',
+    isUrgent: true,
+    timeLimitSeconds: 45,
+    defaultOptionId: 'A',
+    inquiryQuestions: [
+      {
+        id: 'c1_q1',
+        category: 'Paciente',
+        question: '¿Por qué siente miedo el paciente antes de firmar?',
+        answer: 'Carlos dice: "Nadie me ha explicado qué me van a hacer exactamente, si la anestesia es peligrosa o cuántos días estaré de baja. Solo me dieron el papel sin decir nada."'
+      },
+      {
+        id: 'c1_q2',
+        category: 'Legal',
+        question: '¿Está el paciente capacitado legal y cognitivamente?',
+        answer: 'Carlos se encuentra lúcido, orientado (Glasgow 15/15) y sin síntomas de toxicidad o confusión. Es perfectamente capaz de decidir si se le brinda la información.'
+      }
+    ],
     options: [
       {
         id: 'A',
@@ -117,6 +135,21 @@ export const CLINICAL_CASES: ClinicalCase[] = [
     ],
     bioethicalDilemma: '¿Debe prevalecer la decisión lúcida de la paciente sobre su propio cuerpo o debe cederse ante la angustia y presión de los familiares que demandan más intervencionismo?',
     question: '¿Cuál es la conducta médica bioéticamente adecuada?',
+    bioethicalHint: 'La voluntad del paciente competente prevalece sobre la opinión de sus familiares. Forzar tratamientos inútiles o no deseados infringe el principio de No Maleficencia.',
+    inquiryQuestions: [
+      {
+        id: 'c2_q1',
+        category: 'Paciente',
+        question: '¿Qué opina María sobre los temores de sus hijos?',
+        answer: 'María sonríe con tristeza y dice: "Los amo con el alma, pero ellos están aferrados al miedo. Yo ya acepté mi proceso y solo quiero paz sin más sufrimiento físico."'
+      },
+      {
+        id: 'c2_q2',
+        category: 'Familia',
+        question: '¿Por qué la familia insiste en la quimioterapia experimental?',
+        answer: 'El hijo admite: "Nos sentimos culpables si dejamos de luchar. Pensamos que si no intentamos todo, seremos responsables de su muerte."'
+      }
+    ],
     options: [
       {
         id: 'A',
@@ -398,6 +431,24 @@ export const CLINICAL_CASES: ClinicalCase[] = [
     ],
     bioethicalDilemma: '¿Debe el equipo respetar la directriz anticipada formal de una paciente adulta competente aplicando todas las alternativas médicas posibles, o imponer la transfusión por la fuerza?',
     question: '¿Qué estrategia clínica y ética debe liderar el equipo?',
+    bioethicalHint: 'El respeto a las voluntades anticipadas de un paciente competente es legal y éticamente obligatorio. Se deben agotar todas las alternativas no sanguíneas antes de cualquier conflicto.',
+    isUrgent: true,
+    timeLimitSeconds: 40,
+    defaultOptionId: 'A',
+    inquiryQuestions: [
+      {
+        id: 'c5_q1',
+        category: 'Legal',
+        question: '¿El documento de Voluntades Anticipadas es válido y firmado en lucidez?',
+        answer: 'El registro legal confirma que Elena firmó el documento notariado hace 6 meses con capacidad jurídica plena y testigo legal autorizando técnicas de ahorro de sangre sin transfundir.'
+      },
+      {
+        id: 'c5_q2',
+        category: 'Historial',
+        question: '¿Disponemos en el quirófano de Cell Saver y ácido tranexámico?',
+        answer: 'El equipo de perfusión confirma que el recuperador celular intraoperatorio (Cell Saver) está listo y hay stock de ácido tranexámico y fibrinógeno.'
+      }
+    ],
     options: [
       {
         id: 'A',
@@ -746,6 +797,24 @@ export const CLINICAL_CASES: ClinicalCase[] = [
     ],
     bioethicalDilemma: '¿Debe asignarse el recurso escaso basándose en criterios objetivos de pronóstico médico y justicia distributiva, o ceder ante presiones socioeconómicas e influencias?',
     question: '¿Qué asignación debe dictaminar el equipo médico responsable?',
+    bioethicalHint: 'El principio de Justicia Distributiva prohíbe la discriminación por estatus social o influencias. Los recursos escasos deben asignarse según criterios clínicos objetivos de pronóstico y beneficio de supervivencia.',
+    isUrgent: true,
+    timeLimitSeconds: 35,
+    defaultOptionId: 'A',
+    inquiryQuestions: [
+      {
+        id: 'c9_q1',
+        category: 'Historial',
+        question: '¿Cuáles son las puntuaciones de pronóstico clínico (SOFA score) objetivas?',
+        answer: 'El comité de triaje confirma que Pedro (52 años) tiene un SOFA score de 4 (alta reversibilidad) mientras que Don Fernando (84 años) tiene un SOFA score de 14 con fallo multiorgánico (futilidad biológica).'
+      },
+      {
+        id: 'c9_q2',
+        category: 'Legal',
+        question: '¿Qué establecen los protocolos éticos de pandemias y triaje catástrofe?',
+        answer: 'Los protocolos éticos nacionales ordenan priorizar la maximización de vidas salvadas y años de vida con calidad, prohibiendo estrictamente tratos de favor por motivos socioeconómicos.'
+      }
+    ],
     options: [
       {
         id: 'A',
@@ -1003,6 +1072,24 @@ export const CLINICAL_CASES: ClinicalCase[] = [
     ],
     bioethicalDilemma: '¿Debe el médico supeditar su juicio clínico humanista al veredicto automatizado de una IA o asumir la responsabilidad ética de rectificar y tratar al paciente?',
     question: '¿Qué postura debe adoptar el médico frente a la tecnología?',
+    bioethicalHint: 'La Inteligencia Artificial es un instrumento de apoyo asistencial, no una autoridad sustitutiva. El principio de "Human-in-the-Loop" exige la primacía del juicio clínico y la equidad sobre los algoritmos.',
+    isUrgent: true,
+    timeLimitSeconds: 40,
+    defaultOptionId: 'A',
+    inquiryQuestions: [
+      {
+        id: 'c12_q1',
+        category: 'Legal',
+        question: '¿Con qué datos de entrenamiento se alimentó el algoritmo MediPredict-AI?',
+        answer: 'El informe de auditoría preliminar revela que el algoritmo utilizó muestras de datos sesgadas de seguros privados que penalizan automáticamente la supervivencia en pacientes con estatus socioeconómico desfavorecido.'
+      },
+      {
+        id: 'c12_q2',
+        category: 'Historial',
+        question: '¿Cuál es el pronóstico real de Don Samuel según las pruebas de laboratorio humanas?',
+        answer: 'El perfil analítico muestra fallo renal de origen prerrenal por deshidratación aguda (urea/creatinina > 20). Tras rehidratación y 2 sesiones de hemodiálisis temporal, el riñón recuperará función biológica completa.'
+      }
+    ],
     options: [
       {
         id: 'A',

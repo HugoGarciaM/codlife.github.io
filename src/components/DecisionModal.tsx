@@ -68,12 +68,12 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
   const badge = getQualityBadge();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-[#020c1b]/85 backdrop-blur-md overflow-y-auto select-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-xl overflow-y-auto select-none">
       <motion.div
         initial={{ opacity: 0, scale: 0.93, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="w-full max-w-3xl glass rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden my-auto space-y-5"
+        className="w-full max-w-3xl glass-card rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden my-auto space-y-5 animate-scale-in"
       >
         {/* Quality Banner & Score Delta Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
@@ -118,7 +118,7 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
             <Sparkles size={14} />
             <span>1. Consecuencias Asistenciales y Resultado Clínico:</span>
           </h3>
-          <div className="p-4 rounded-xl bg-[#020c1b]/80 border border-slate-800 text-slate-200 text-sm leading-relaxed">
+          <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-700/50 shadow-inner text-slate-200 text-sm leading-relaxed">
             {option.outcomeNarrative}
           </div>
         </div>
@@ -174,7 +174,7 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
             <BookOpen size={14} />
             <span>3. Razonamiento Bioético y Principios Involucrados:</span>
           </h3>
-          <div className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-800/50 text-slate-200 text-sm leading-relaxed space-y-2.5">
+          <div className="p-4 rounded-xl bg-cyan-950/30 border border-cyan-800/50 shadow-inner text-slate-200 text-sm leading-relaxed space-y-2.5">
             <p>{option.bioethicalExplanation}</p>
 
             {/* Principles affected breakdown */}
@@ -198,7 +198,7 @@ export const DecisionModal: React.FC<DecisionModalProps> = ({
         </div>
 
         {/* Action Button */}
-        <div className="flex items-center justify-end pt-3 border-t border-slate-800">
+        <div className="flex items-center justify-end pt-3 border-t border-slate-700/50">
           <button
             id="modal-continue-btn"
             onClick={() => {

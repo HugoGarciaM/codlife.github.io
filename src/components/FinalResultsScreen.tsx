@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import confetti from 'canvas-confetti';
 import { GameState } from '../types';
 import { getRankForScore, determineGameEnding } from '../data/achievements';
 import { StatBar } from './StatBar';
 import { BadgeIcon } from './Graphics/BadgeIcon';
+import { BioethicsRadarChart } from './Graphics/BioethicsRadarChart';
+import { CertificateModal } from './CertificateModal';
 import { soundManager } from '../utils/audio';
 import {
   Trophy,
@@ -33,6 +35,7 @@ export const FinalResultsScreen: React.FC<FinalResultsScreenProps> = ({
   onRestart,
   onOpenGlossary
 }) => {
+  const [showCertificateModal, setShowCertificateModal] = useState<boolean>(false);
   const currentRank = getRankForScore(gameState.score);
   const ending = determineGameEnding(gameState.score, gameState.stats);
   const unlockedBadges = gameState.achievements.filter(a => a.unlocked);
@@ -125,12 +128,17 @@ export const FinalResultsScreen: React.FC<FinalResultsScreenProps> = ({
         transition={{ duration: 0.6, delay: 0.3 }}
         className="glass rounded-3xl p-6 sm:p-8 space-y-5"
       >
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="flex flex-col lg:flex-row items-center justify-between border-b border-slate-800 pb-3 gap-3">
           <h3 className="text-lg font-display font-bold text-white flex items-center gap-2">
             <ShieldCheck size={20} className="text-[#64ffda]" />
-            <span>Balance de los 8 Indicadores Deontológicos</span>
+            <span>Balance del Perfil Ético (Polígono Octagonal SVG)</span>
           </h3>
-          <span className="text-xs font-mono text-slate-400">Escala de 0 a 100</span>
+          <span className="text-xs font-mono text-slate-400">Escala del 0% al 100% por Indicador</span>
+        </div>
+
+        {/* 8-Axis Radar Chart Display */}
+        <div className="flex items-center justify-center p-4 rounded-2xl bg-[#020c1b]/90 border border-teal-500/30 my-4 shadow-2xl">
+          <BioethicsRadarChart stats={gameState.stats} size={320} showLabels={true} />
         </div>
 
         {/* 4 Beauchamp Pillars */}
@@ -332,12 +340,12 @@ export const FinalResultsScreen: React.FC<FinalResultsScreenProps> = ({
           <button
             onClick={() => {
               soundManager.playClick();
-              handlePrint();
+              setShowCertificateModal(true);
             }}
-            className="px-5 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition-all flex items-center gap-2 text-sm font-medium cursor-pointer"
+            className="px-5 py-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 hover:text-white transition-all flex items-center gap-2 text-sm font-medium cursor-pointer shadow-md"
           >
-            <Printer size={16} className="text-[#64ffda]" />
-            <span>Guardar / Imprimir Certificado</span>
+            <Printer size={16} className="text-amber-400" />
+            <span>Ver / Imprimir Certificado de Honor</span>
           </button>
         </div>
 
@@ -352,6 +360,14 @@ export const FinalResultsScreen: React.FC<FinalResultsScreenProps> = ({
           <span>JUGAR DE NUEVO</span>
         </button>
       </div>
+
+      {/* Official Certificate Modal */}
+      {showCertificateModal && (
+        <CertificateModal
+          gameState={gameState}
+          onClose={() => setShowCertificateModal(false)}
+        />
+      )}
     </div>
   );
 };

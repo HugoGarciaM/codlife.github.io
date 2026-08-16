@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GameState, CaseOption, BioethicsStats, DecisionRecord } from './types';
+import { GameState, CaseOption, BioethicsStats, DecisionRecord, GameMode } from './types';
 import { CLINICAL_CASES } from './data/cases';
 import { evaluateAchievements } from './data/achievements';
 import { storageManager } from './utils/storage';
@@ -15,6 +15,7 @@ import { GlossaryModal } from './components/GlossaryModal';
 import { HowToPlayModal } from './components/HowToPlayModal';
 import { CreditsModal } from './components/CreditsModal';
 import { FinalResultsScreen } from './components/FinalResultsScreen';
+import { PracticeModeModal } from './components/PracticeModeModal';
 
 export default function App() {
   const [gameState, setGameState] = useState<GameState>(() => storageManager.loadGameState());
@@ -23,10 +24,14 @@ export default function App() {
 
   // Modal dialog states
   const [showProfileModal, setShowProfileModal] = useState<boolean>(false);
+  const [showPracticeModal, setShowPracticeModal] = useState<boolean>(false);
   const [showAchievementsModal, setShowAchievementsModal] = useState<boolean>(false);
   const [showGlossaryModal, setShowGlossaryModal] = useState<boolean>(false);
   const [showHowToPlayModal, setShowHowToPlayModal] = useState<boolean>(false);
   const [showCreditsModal, setShowCreditsModal] = useState<boolean>(false);
+
+  // Selected mode temporary state
+  const [selectedMode, setSelectedMode] = useState<GameMode>('standard');
 
   // Active decision modal feedback
   const [activeDecisionOption, setActiveDecisionOption] = useState<CaseOption | null>(null);
@@ -50,18 +55,34 @@ export default function App() {
     setGameState(updated);
   };
 
-  const handleStartNew = () => {
+  const handleStartNew = (mode: GameMode = 'standard') => {
+    setSelectedMode(mode);
     setShowProfileModal(true);
   };
 
   const handleConfirmProfile = (name: string) => {
     const freshState = storageManager.resetGame();
     freshState.playerName = name;
-    freshState.studentTitle = 'Interno en formación';
+    freshState.studentTitle = selectedMode === 'challenge' ? 'Residente en Desafío Ético' : 'Interno en formación';
+    freshState.gameMode = selectedMode;
+    freshState.committeeConsultationsLeft = selectedMode === 'challenge' ? 0 : 2;
+
     storageManager.saveGameState(freshState);
     setGameState(freshState);
     setHasSave(true);
     setShowProfileModal(false);
+    setCurrentScreen('game');
+  };
+
+  const handleSelectPracticeCase = (caseIndex: number) => {
+    setShowPracticeModal(false);
+    const practiceState: GameState = {
+      ...gameState,
+      gameMode: 'practice',
+      currentCaseIndex: caseIndex,
+      committeeConsultationsLeft: 1
+    };
+    setGameState(practiceState);
     setCurrentScreen('game');
   };
 
@@ -85,8 +106,27 @@ export default function App() {
     }
   };
 
+  const handleUseCommitteeConsultation = () => {
+    if (gameState.committeeConsultationsLeft <= 0) return;
+    const updatedState: GameState = {
+      ...gameState,
+      committeeConsultationsLeft: Math.max(0, gameState.committeeConsultationsLeft - 1),
+      hintsUsed: gameState.hintsUsed + 1
+    };
+    setGameState(updatedState);
+    if (gameState.gameMode !== 'practice') {
+      storageManager.saveGameState(updatedState);
+    }
+  };
+
   const handleSelectOption = (option: CaseOption) => {
     setPreviousStatsSnapshot({ ...gameState.stats });
+
+    // In Challenge mode, penalize questionable/problematic decisions 1.5x scoreDelta
+    let scoreDeltaCalculated = option.scoreDelta;
+    if (gameState.gameMode === 'challenge' && option.scoreDelta < 0) {
+      scoreDeltaCalculated = Math.round(option.scoreDelta * 1.5);
+    }
 
     // 1. Calculate new stats
     const newStats: BioethicsStats = {
@@ -101,7 +141,7 @@ export default function App() {
     };
 
     // 2. Calculate new score (0 to 1000)
-    const newScore = Math.max(0, Math.min(1000, gameState.score + option.scoreDelta));
+    const newScore = Math.max(0, Math.min(1000, gameState.score + scoreDeltaCalculated));
 
     // 3. Add consequence flag if any
     const updatedFlags = [...gameState.consequenceFlags];
@@ -118,7 +158,7 @@ export default function App() {
       optionText: option.text,
       resultTitle: option.resultTitle,
       quality: option.quality,
-      scoreDelta: option.scoreDelta,
+      scoreDelta: scoreDeltaCalculated,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     const updatedHistory = [...gameState.decisionHistory, decisionRecord];
@@ -143,12 +183,21 @@ export default function App() {
     };
 
     setGameState(updatedState);
-    storageManager.saveGameState(updatedState);
+    if (gameState.gameMode !== 'practice') {
+      storageManager.saveGameState(updatedState);
+    }
     setActiveDecisionOption(option);
   };
 
   const handleProceedFromDecision = () => {
     setActiveDecisionOption(null);
+
+    if (gameState.gameMode === 'practice') {
+      // In practice mode, return to start or practice selector
+      setCurrentScreen('start');
+      return;
+    }
+
     const nextIndex = gameState.currentCaseIndex + 1;
 
     if (nextIndex >= CLINICAL_CASES.length) {
@@ -183,7 +232,7 @@ export default function App() {
   };
 
   const currentCase = CLINICAL_CASES[gameState.currentCaseIndex] || CLINICAL_CASES[0];
-  const isLastCase = gameState.currentCaseIndex >= CLINICAL_CASES.length - 1;
+  const isLastCase = gameState.currentCaseIndex >= CLINICAL_CASES.length - 1 || gameState.gameMode === 'practice';
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased flex flex-col selection:bg-teal-500 selection:text-slate-950">
@@ -205,6 +254,7 @@ export default function App() {
             savedScore={gameState.score}
             onStartNew={handleStartNew}
             onContinue={handleContinue}
+            onOpenPracticeMode={() => setShowPracticeModal(true)}
             onOpenAchievements={() => setShowAchievementsModal(true)}
             onOpenHowToPlay={() => setShowHowToPlayModal(true)}
             onOpenGlossary={() => setShowGlossaryModal(true)}
@@ -217,6 +267,7 @@ export default function App() {
             currentCase={currentCase}
             gameState={gameState}
             onSelectOption={handleSelectOption}
+            onUseCommitteeConsultation={handleUseCommitteeConsultation}
           />
         )}
 
@@ -253,6 +304,14 @@ export default function App() {
         />
       )}
 
+      {/* Quick Practice Case Selector Modal */}
+      {showPracticeModal && (
+        <PracticeModeModal
+          onSelectCase={handleSelectPracticeCase}
+          onClose={() => setShowPracticeModal(false)}
+        />
+      )}
+
       {/* Achievements Gallery Modal */}
       {showAchievementsModal && (
         <AchievementsModal
@@ -278,3 +337,4 @@ export default function App() {
     </div>
   );
 }
+

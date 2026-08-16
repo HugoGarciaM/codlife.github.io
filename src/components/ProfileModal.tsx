@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { PatientAvatar } from './Graphics/PatientAvatar';
+import { BioethicsRadarChart } from './Graphics/BioethicsRadarChart';
+import { INITIAL_STATS } from '../utils/storage';
 import { StatBar } from './StatBar';
 import { soundManager } from '../utils/audio';
 import {
@@ -42,12 +44,12 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#020c1b]/85 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xl overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="w-full max-w-2xl glass rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden my-auto space-y-5"
+        className="w-full max-w-2xl glass-card rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden my-auto space-y-5 animate-scale-in"
       >
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div>
@@ -65,7 +67,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Avatar & Name Input Row */}
-          <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-2xl bg-[#020c1b]/60 border border-slate-800">
+          <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-2xl bg-slate-900/50 border border-slate-700/50 shadow-inner">
             <div className="w-24 h-28 shrink-0 bg-slate-900/90 rounded-xl p-1 border border-[#64ffda]/30 flex items-center justify-center shadow-inner">
               <PatientAvatar type="doctor_mentor" size="sm" />
             </div>
@@ -88,7 +90,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   }}
                   placeholder="Ej: Dr. Andrés Morales"
                   maxLength={40}
-                  className="w-full px-4 py-3 bg-[#020c1b] border border-slate-700 focus:border-[#64ffda] focus:ring-2 focus:ring-[#64ffda]/20 rounded-xl text-white placeholder-slate-500 font-medium outline-none transition-all"
+                  className="w-full px-4 py-3 bg-slate-950/80 border border-slate-700 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 rounded-xl text-white placeholder-slate-500 font-medium outline-none transition-all shadow-inner"
                   autoFocus
                 />
                 <User
@@ -112,9 +114,12 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               <span>Indicadores Éticos Iniciales (Punto de Equilibrio: 50/100)</span>
             </h3>
 
-            {/* 4 Primary Principles */}
+            {/* Radar Chart Initial Preview */}
+            <div className="flex items-center justify-center p-3 rounded-2xl bg-slate-900/60 border border-slate-700/50 mb-3 shadow-inner">
+              <BioethicsRadarChart stats={INITIAL_STATS} size={220} showLabels={true} />
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-2.5">
-              <div className="p-3 rounded-xl bg-[#020c1b]/40 border border-slate-800">
+              <div className="p-3 rounded-xl bg-slate-900/40 border border-slate-700/50">
                 <StatBar
                   label="Autonomía"
                   value={50}
@@ -122,7 +127,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   icon={<ShieldCheck size={14} className="text-cyan-400" />}
                 />
               </div>
-              <div className="p-3 rounded-xl bg-[#020c1b]/40 border border-slate-800">
+              <div className="p-3 rounded-xl bg-slate-900/40 border border-slate-700/50">
                 <StatBar
                   label="Beneficencia"
                   value={50}
@@ -130,7 +135,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   icon={<Heart size={14} className="text-emerald-400" />}
                 />
               </div>
-              <div className="p-3 rounded-xl bg-[#020c1b]/40 border border-slate-800">
+              <div className="p-3 rounded-xl bg-slate-900/40 border border-slate-700/50">
                 <StatBar
                   label="No Maleficencia"
                   value={50}
@@ -138,7 +143,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   icon={<ShieldCheck size={14} className="text-rose-400" />}
                 />
               </div>
-              <div className="p-3 rounded-xl bg-[#020c1b]/40 border border-slate-800">
+              <div className="p-3 rounded-xl bg-slate-900/40 border border-slate-700/50">
                 <StatBar
                   label="Justicia"
                   value={50}
@@ -150,7 +155,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
             {/* Secondary Indicators */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <div className="p-2.5 rounded-xl bg-[#020c1b]/30 border border-slate-800">
+              <div className="p-2.5 rounded-xl bg-slate-900/30 border border-slate-700/40">
                 <StatBar
                   label="Confidencialidad"
                   value={50}
@@ -159,7 +164,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   icon={<Lock size={12} className="text-purple-400" />}
                 />
               </div>
-              <div className="p-2.5 rounded-xl bg-[#020c1b]/30 border border-slate-800">
+              <div className="p-2.5 rounded-xl bg-slate-900/30 border border-slate-700/40">
                 <StatBar
                   label="Consentimiento"
                   value={50}
@@ -168,7 +173,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                   icon={<FileCheck2 size={12} className="text-indigo-400" />}
                 />
               </div>
-              <div className="p-2.5 rounded-xl bg-[#020c1b]/30 border border-slate-800">
+              <div className="p-2.5 rounded-xl bg-slate-900/30 border border-slate-700/40">
                 <StatBar
                   label="Integridad"
                   value={50}

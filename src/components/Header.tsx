@@ -3,6 +3,7 @@ import { GameState } from '../types';
 import { getRankForScore } from '../data/achievements';
 import { soundManager } from '../utils/audio';
 import { EcgMonitor } from './Graphics/EcgMonitor';
+import { BioethicsRadarChart } from './Graphics/BioethicsRadarChart';
 import { StatBar } from './StatBar';
 import {
   Volume2,
@@ -41,7 +42,7 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full glass px-3 sm:px-6 py-2.5 select-none transition-all">
+    <header className="sticky top-0 z-40 w-full glass-card border-t-0 border-x-0 rounded-b-xl px-3 sm:px-6 py-2.5 select-none transition-all shadow-xl">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
         {/* Left: App Logo & Student Avatar Pill */}
         <div className="flex items-center gap-3 min-w-0">
@@ -80,13 +81,13 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-3 sm:gap-6">
           <div className="hidden lg:block">
             <EcgMonitor
-              bpm={72 + Math.floor(gameState.score / 60)}
-              statusText={gameState.score >= 800 ? 'EXCELENCIA ÉTICA' : 'INTERNADO ACTIVO'}
+              vitalsStatus={gameState.score < 400 ? 'Grave' : 'Estable'}
+              customBpm={70 + Math.floor(gameState.score / 50)}
             />
           </div>
 
           {/* 4 Pillars Mini Bar Preview (as in design header) */}
-          <div className="hidden xl:grid grid-cols-4 gap-4 p-2 rounded-xl bg-[#020c1b]/60 border border-slate-800">
+          <div className="hidden xl:grid grid-cols-4 gap-4 p-2 rounded-xl bg-slate-900/50 border border-slate-700/50 shadow-inner">
             <div className="flex flex-col gap-0.5">
               <span className="text-[9px] uppercase font-bold text-slate-400">Autonomía</span>
               <div className="w-20 h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -126,11 +127,11 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Score & Rank Display */}
-          <div className="text-right flex flex-col justify-center px-3 py-1 bg-[#020c1b]/70 rounded-xl border border-slate-800">
+          <div className="text-right flex flex-col justify-center px-4 py-1 bg-slate-900/60 rounded-xl border border-slate-700/50 shadow-inner">
             <p className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">
               Puntuación
             </p>
-            <p className="text-xl sm:text-2xl font-black font-mono text-[#64ffda] leading-none">
+            <p className="text-xl sm:text-2xl font-black font-mono text-cyan-400 leading-none drop-shadow-md">
               {gameState.score.toString().padStart(3, '0')}
               <span className="text-[10px] text-slate-500 font-normal ml-1">/1000</span>
             </p>
@@ -220,57 +221,64 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Slide-down Stats Full Drawer */}
       {showStatsDrawer && (
-        <div className="max-w-7xl mx-auto mt-2.5 pt-3 pb-2 px-3 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#020c1b]/95 rounded-xl p-3 shadow-2xl border border-[#64ffda]/20">
-          <StatBar
-            label="1. Autonomía"
-            value={gameState.stats.autonomy}
-            color="sky"
-            size="sm"
-          />
-          <StatBar
-            label="2. Beneficencia"
-            value={gameState.stats.beneficence}
-            color="rose"
-            size="sm"
-          />
-          <StatBar
-            label="3. No Maleficencia"
-            value={gameState.stats.nonMaleficence}
-            color="emerald"
-            size="sm"
-          />
-          <StatBar
-            label="4. Justicia"
-            value={gameState.stats.justice}
-            color="amber"
-            size="sm"
-          />
+        <div className="max-w-7xl mx-auto mt-2.5 pt-3 pb-4 px-4 border-t border-slate-700/50 flex flex-col md:flex-row items-center justify-between gap-6 bg-slate-900/95 rounded-2xl p-4 shadow-2xl border border-teal-500/30 animate-slide-up">
+          {/* Live SVG Bioethics Radar Polygon */}
+          <div className="flex items-center justify-center p-2 rounded-xl bg-slate-950/80 border border-slate-800 shrink-0 shadow-inner">
+            <BioethicsRadarChart stats={gameState.stats} size={230} showLabels={true} />
+          </div>
 
-          <div className="col-span-2 sm:col-span-4 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-slate-800">
+          <div className="flex-1 w-full grid grid-cols-2 sm:grid-cols-4 gap-3">
             <StatBar
-              label="Confidencialidad"
-              value={gameState.stats.confidentiality}
-              color="purple"
-              size="sm"
-            />
-            <StatBar
-              label="Consentimiento"
-              value={gameState.stats.consent}
-              color="indigo"
-              size="sm"
-            />
-            <StatBar
-              label="Integridad"
-              value={gameState.stats.integrity}
-              color="teal"
-              size="sm"
-            />
-            <StatBar
-              label="Comunicación"
-              value={gameState.stats.communication}
+              label="1. Autonomía"
+              value={gameState.stats.autonomy}
               color="sky"
               size="sm"
             />
+            <StatBar
+              label="2. Beneficencia"
+              value={gameState.stats.beneficence}
+              color="emerald"
+              size="sm"
+            />
+            <StatBar
+              label="3. No Maleficencia"
+              value={gameState.stats.nonMaleficence}
+              color="rose"
+              size="sm"
+            />
+            <StatBar
+              label="4. Justicia"
+              value={gameState.stats.justice}
+              color="amber"
+              size="sm"
+            />
+
+            <div className="col-span-2 sm:col-span-4 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-slate-800">
+              <StatBar
+                label="Confidencialidad"
+                value={gameState.stats.confidentiality}
+                color="purple"
+                size="sm"
+              />
+              <StatBar
+                label="Consentimiento"
+                value={gameState.stats.consent}
+                color="indigo"
+                size="sm"
+              />
+              <StatBar
+                label="Integridad"
+                value={gameState.stats.integrity}
+                color="teal"
+                size="sm"
+              />
+              <StatBar
+                label="Comunicación"
+                value={gameState.stats.communication}
+                color="cyan"
+                size="sm"
+              />
+            </div>
           </div>
         </div>
       )}
